@@ -1,0 +1,7 @@
+artifactRepo:
+  owner: kj800x
+  repo: hue-exporter-rs
+  branch: master
+team: home-sensors
+kind: worker
+namespace: home-sensors

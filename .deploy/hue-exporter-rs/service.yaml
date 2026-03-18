@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/instance: hue-exporter-rs
+  name: hue-exporter-rs
+  namespace: home-sensors
+spec:
+  ports:
+    - name: http
+      port: 9100
+      protocol: TCP
+      targetPort: 9366
+  selector:
+    app: hue-exporter-rs
+  type: LoadBalancer

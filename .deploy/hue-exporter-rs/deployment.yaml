@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hue-exporter-rs
+  name: hue-exporter-rs
+  namespace: home-sensors
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: hue-exporter-rs
+  template:
+    metadata:
+      labels:
+        app: hue-exporter-rs
+    spec:
+      containers:
+        - name: hue-exporter-rs
+          image: ghcr.io/kj800x/hue-exporter-rs:commit-$SHA
+          command: [hue-exporter-rs]
+          ports:
+            - containerPort: 9366
+              protocol: TCP
+          env:
+            - name: HUE_BRIDGE_IP
+              valueFrom:
+                secretKeyRef:
+                  name: hue-exporter-secrets
+                  key: HUE_BRIDGE_IP
+            - name: HUE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: hue-exporter-secrets
+                  key: HUE_API_KEY
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 9366
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          workingDir: /app
+      imagePullSecrets:
+        - name: ghcr-kj800x
