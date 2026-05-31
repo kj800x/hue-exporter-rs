@@ -219,7 +219,10 @@ impl HueClient {
         let mut result = Vec::with_capacity(lights.len());
 
         for light in &lights {
-            let device_id = light_to_device.get(light.id.as_str()).copied().unwrap_or("unknown");
+            let device_id = light_to_device
+                .get(light.id.as_str())
+                .copied()
+                .unwrap_or("unknown");
             let (model_id, product_name) = device_info
                 .get(device_id)
                 .copied()
@@ -263,8 +266,10 @@ impl HueClient {
                 }
                 state.color_temperature_mirek =
                     light.color_temperature.as_ref().and_then(|ct| ct.mirek);
-                state.color_temperature_mirek_valid =
-                    light.color_temperature.as_ref().and_then(|ct| ct.mirek_valid);
+                state.color_temperature_mirek_valid = light
+                    .color_temperature
+                    .as_ref()
+                    .and_then(|ct| ct.mirek_valid);
                 state.effect = light.effects.as_ref().and_then(|e| e.status.clone());
                 state.dynamics_status = light.dynamics.as_ref().and_then(|d| d.status.clone());
                 state.dynamics_speed = light.dynamics.as_ref().and_then(|d| d.speed);
@@ -314,7 +319,11 @@ fn xy_brightness_to_hs(x: f64, y: f64, brightness: f64) -> (f64, f64) {
     };
 
     let hue = if hue < 0.0 { hue + 360.0 } else { hue };
-    let saturation = if max < f64::EPSILON { 0.0 } else { (delta / max) * 100.0 };
+    let saturation = if max < f64::EPSILON {
+        0.0
+    } else {
+        (delta / max) * 100.0
+    };
 
     (hue, saturation)
 }

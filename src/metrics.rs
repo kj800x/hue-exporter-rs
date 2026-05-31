@@ -25,14 +25,29 @@ fn write_light_metrics(out: &mut String, lights: &[LightState]) {
     }
 
     // reachable — always reported for every known light
-    write_header(out, "hue_light_reachable", "Whether the light is reachable from the bridge", "gauge");
+    write_header(
+        out,
+        "hue_light_reachable",
+        "Whether the light is reachable from the bridge",
+        "gauge",
+    );
     for l in lights {
-        write_gauge(out, "hue_light_reachable", l, if l.reachable { 1.0 } else { 0.0 });
+        write_gauge(
+            out,
+            "hue_light_reachable",
+            l,
+            if l.reachable { 1.0 } else { 0.0 },
+        );
     }
     out.push('\n');
 
     // on
-    write_header(out, "hue_light_on", "Whether the light is turned on", "gauge");
+    write_header(
+        out,
+        "hue_light_on",
+        "Whether the light is turned on",
+        "gauge",
+    );
     for l in lights {
         if let Some(on) = l.on {
             write_gauge(out, "hue_light_on", l, if on { 1.0 } else { 0.0 });
@@ -41,7 +56,12 @@ fn write_light_metrics(out: &mut String, lights: &[LightState]) {
     out.push('\n');
 
     // brightness
-    write_header(out, "hue_light_brightness", "Light brightness percentage (0-100)", "gauge");
+    write_header(
+        out,
+        "hue_light_brightness",
+        "Light brightness percentage (0-100)",
+        "gauge",
+    );
     for l in lights {
         if let Some(b) = l.brightness {
             write_gauge(out, "hue_light_brightness", l, b);
@@ -50,7 +70,12 @@ fn write_light_metrics(out: &mut String, lights: &[LightState]) {
     out.push('\n');
 
     // color xy
-    write_header(out, "hue_light_color_xy_x", "CIE x color coordinate", "gauge");
+    write_header(
+        out,
+        "hue_light_color_xy_x",
+        "CIE x color coordinate",
+        "gauge",
+    );
     for l in lights {
         if let Some((x, _)) = l.color_xy {
             write_gauge(out, "hue_light_color_xy_x", l, x);
@@ -58,7 +83,12 @@ fn write_light_metrics(out: &mut String, lights: &[LightState]) {
     }
     out.push('\n');
 
-    write_header(out, "hue_light_color_xy_y", "CIE y color coordinate", "gauge");
+    write_header(
+        out,
+        "hue_light_color_xy_y",
+        "CIE y color coordinate",
+        "gauge",
+    );
     for l in lights {
         if let Some((_, y)) = l.color_xy {
             write_gauge(out, "hue_light_color_xy_y", l, y);
@@ -67,7 +97,12 @@ fn write_light_metrics(out: &mut String, lights: &[LightState]) {
     out.push('\n');
 
     // color hue and saturation (derived from CIE xy + brightness)
-    write_header(out, "hue_light_color_hue", "Color hue in degrees (0-360)", "gauge");
+    write_header(
+        out,
+        "hue_light_color_hue",
+        "Color hue in degrees (0-360)",
+        "gauge",
+    );
     for l in lights {
         if let Some(h) = l.color_hue {
             write_gauge(out, "hue_light_color_hue", l, h);
@@ -75,7 +110,12 @@ fn write_light_metrics(out: &mut String, lights: &[LightState]) {
     }
     out.push('\n');
 
-    write_header(out, "hue_light_color_saturation", "Color saturation percentage (0-100)", "gauge");
+    write_header(
+        out,
+        "hue_light_color_saturation",
+        "Color saturation percentage (0-100)",
+        "gauge",
+    );
     for l in lights {
         if let Some(s) = l.color_saturation {
             write_gauge(out, "hue_light_color_saturation", l, s);
@@ -84,7 +124,12 @@ fn write_light_metrics(out: &mut String, lights: &[LightState]) {
     out.push('\n');
 
     // color temperature
-    write_header(out, "hue_light_color_temperature_mirek", "Color temperature in mirek", "gauge");
+    write_header(
+        out,
+        "hue_light_color_temperature_mirek",
+        "Color temperature in mirek",
+        "gauge",
+    );
     for l in lights {
         if let Some(mirek) = l.color_temperature_mirek {
             write_gauge(out, "hue_light_color_temperature_mirek", l, mirek as f64);
@@ -92,16 +137,31 @@ fn write_light_metrics(out: &mut String, lights: &[LightState]) {
     }
     out.push('\n');
 
-    write_header(out, "hue_light_color_temperature_mirek_valid", "Whether the mirek value is valid", "gauge");
+    write_header(
+        out,
+        "hue_light_color_temperature_mirek_valid",
+        "Whether the mirek value is valid",
+        "gauge",
+    );
     for l in lights {
         if let Some(valid) = l.color_temperature_mirek_valid {
-            write_gauge(out, "hue_light_color_temperature_mirek_valid", l, if valid { 1.0 } else { 0.0 });
+            write_gauge(
+                out,
+                "hue_light_color_temperature_mirek_valid",
+                l,
+                if valid { 1.0 } else { 0.0 },
+            );
         }
     }
     out.push('\n');
 
     // dynamics
-    write_header(out, "hue_light_dynamics_speed", "Light dynamics speed (0-1)", "gauge");
+    write_header(
+        out,
+        "hue_light_dynamics_speed",
+        "Light dynamics speed (0-1)",
+        "gauge",
+    );
     for l in lights {
         if let Some(speed) = l.dynamics_speed {
             write_gauge(out, "hue_light_dynamics_speed", l, speed);
@@ -120,9 +180,9 @@ fn write_light_metrics(out: &mut String, lights: &[LightState]) {
         let mode = l.mode.as_deref().unwrap_or("normal");
 
         use std::fmt::Write;
-        let _ = write!(
+        let _ = writeln!(
             out,
-            "hue_light_info{{{},effect=\"{}\",dynamics_status=\"{}\",mode=\"{}\"}} 1\n",
+            "hue_light_info{{{},effect=\"{}\",dynamics_status=\"{}\",mode=\"{}\"}} 1",
             labels(l),
             escape(effect),
             escape(dynamics),
@@ -140,9 +200,14 @@ fn write_gauge(out: &mut String, name: &str, light: &LightState, value: f64) {
     use std::fmt::Write;
     // Format without unnecessary trailing zeros, but always at least one decimal
     if value.fract() == 0.0 {
-        let _ = write!(out, "{name}{{{labels}}} {val}\n", labels = labels(light), val = value as i64);
+        let _ = writeln!(
+            out,
+            "{name}{{{labels}}} {val}",
+            labels = labels(light),
+            val = value as i64
+        );
     } else {
-        let _ = write!(out, "{name}{{{labels}}} {value}\n", labels = labels(light));
+        let _ = writeln!(out, "{name}{{{labels}}} {value}", labels = labels(light));
     }
 }
 
